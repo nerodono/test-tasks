@@ -1,0 +1,1 @@
+select NAME, (select count(DEPT_ID) from Employee where DEPT_ID = Department.ID) from Department
