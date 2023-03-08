@@ -1,4 +1,4 @@
-module NumericSequencer (main) where
+module Main (main) where
 
 -- Haskell lists are lazy, so receiving just list also works.
 sequencer :: [Integer] -> (Integer, Int)

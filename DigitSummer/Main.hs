@@ -1,4 +1,4 @@
-module DigitSummer (main) where
+module Main (main) where
 
 sumDigits :: Integer -> Integer
 sumDigits in_
