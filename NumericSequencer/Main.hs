@@ -20,4 +20,18 @@ sequencer (h:t) =
                   continue = sequencerImpl nextIndex
 
 main :: IO ()
-main = print $ sequencer ([1, 0])
+main = do
+    putStrLn "Enter numbers line by line:"
+    seq <- sequencerGenerator []
+    print $ sequencer seq
+
+    where
+        sequencerGenerator :: [Integer] -> IO [Integer]
+        sequencerGenerator prepend = do
+            line <- getLine
+            let number = read line :: Integer
+            if number == 0 then
+                return prepend
+            else
+                sequencerGenerator (prepend ++ [number])
+
