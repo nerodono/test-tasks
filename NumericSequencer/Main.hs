@@ -1,37 +1,32 @@
 module Main (main) where
 
--- Haskell lists are lazy, so receiving just list also works.
-sequencer :: [Integer] -> (Integer, Int)
-sequencer [] = undefined
-sequencer (0:t) = undefined -- sequence has at least 1 element
-sequencer (h:t) =
-    sequencerImpl 0 0 h t
+sequenceGenerator :: IO [Integer]
+sequenceGenerator = do
+    line <- getLine
+    let num = read line :: Integer
+
+    if num == 0 then
+        return []
+    else
+        fmap (num :) $ sequenceGenerator
+
+sequencer :: [Integer] -> (Integer, Integer)
+sequencer [] = undefined -- Map has at least single element
+sequencer (h:t) = impl 1 h t
     where
-        sequencerImpl :: Int -> Int -> Integer -> [Integer] -> (Integer, Int)
-        sequencerImpl _ maxI' max' [] = (max', maxI')
-        sequencerImpl curIdx maxI' max' (h':t')
-            | h' == 0 = (max', maxI')
-            | otherwise =
-                if h' > max' then
-                    continue nextIndex h' t'
-                else
-                    continue maxI' max' t'
-            where nextIndex = curIdx + 1
-                  continue = sequencerImpl nextIndex
+        impl :: Integer -> Integer -> [Integer] -> (Integer, Integer)
+        impl occurs greatest [] = (greatest, occurs)
+        impl occurs greatest (h : t) =
+            if h > greatest then
+                impl 1 h t
+            else
+                impl (occurs + 1) greatest t
 
 main :: IO ()
 main = do
-    putStrLn "Enter numbers line by line:"
-    seq <- sequencerGenerator []
-    print $ sequencer seq
+    putStrLn "Enter sequence items line by line:"
+    seq <- sequenceGenerator
+    let result = sequencer seq
 
-    where
-        sequencerGenerator :: [Integer] -> IO [Integer]
-        sequencerGenerator prepend = do
-            line <- getLine
-            let number = read line :: Integer
-            if number == 0 then
-                return prepend
-            else
-                sequencerGenerator (prepend ++ [number])
+    print result
 
